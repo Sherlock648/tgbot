@@ -1,1 +1,1 @@
-TOKEN = '7778149192:AAF0cytaTQpja0VosCyVUS0ds2VgDk2RFKQ'
+TOKEN = '********' # ввести токен бота
