@@ -20,7 +20,7 @@ event_queue = asyncio.Queue()
 # Хранилище ролей пользователей
 user_roles = {
     "owner": "sherlock_cole",  # Владелец
-    "head_admins": {"IlyaLoco", "masonishka"},  # Главные админы
+    "head_admins": {"masonishka"},  # Главные админы
     "admins": {}  # Админы
 }
 
