@@ -1,3 +1,5 @@
+# СРАЗУ НАПИШУ: ТАЙМ-ЗОНА УСТАНОВЛЕНА ПОД КИЕВ (НА НЫНЕШНИЙ МОМЕНТ ДЕКАБРЬ 2024 - ЭТО UTC +2, КОГДА В МСК UTC +3 ИЗ-ЗА ПЕРЕВОДА ВРЕМЕНИ, ПОЭТОМУ МЕНЯЙТЕ ПОД СЕБЯ, НАХОДЯ ПО КЛЮЧЕВЫМ СЛОВАМ "Europe/Kyiv" И Т.П.
+
 import sqlite3
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -30,7 +32,7 @@ pending_groups = {}
 # Хранилище для времени, в который пользователь должен отписывать сообщение
 user_time_slots = {}
 
-# Подключение к базе данных SQLite
+# Подключение к бд SQLite
 conn = sqlite3.connect("chat_logs.db")
 cursor = conn.cursor()
 
@@ -52,8 +54,8 @@ def escape_markdown(text: str) -> str:
     escape_chars = r"_*[]()~`>#+-=|{}.!"
     return ''.join(f"\\{char}" if char in escape_chars else char for char in text)
 
-TARGET_THREAD_IDS = [4, 52]  # Целевые темы
-TARGET_CHAT_IDS = [-1002298054169, -1002366477808]  # ID супергрупп для лога
+TARGET_THREAD_IDS = [1, 51]  # ID тем в супергруппе
+TARGET_CHAT_IDS = [-0987654321, -1234567890]  # ID супергрупп для лога
 TARGET_KEYWORDS = [
     "вышла", "вышел", "зашел", "зашёл", "зашла", 
     "Зашла", "Вышла", "Зашел", "Вышел", "Зашёл"
@@ -130,12 +132,12 @@ async def schedule_user_check_with_entry(target_username, start_time, end_time, 
         # Ожидаем события с циклом
         timeout = 0  # Порог для проверки события
         while True:
-            if timeout > 20:  # Увеличили количество попыток до 20
+            if timeout > 20:  # количество попыток до 20
                 print(f"Scheduler: Превышено время ожидания события для {target_username}. Возможно, событие не было установлено вовремя.")
                 break
 
             try:
-                username_in_queue = await asyncio.wait_for(event_queue.get(), timeout=2)  # Увеличили тайм-аут до 2 секунд
+                username_in_queue = await asyncio.wait_for(event_queue.get(), timeout=2)  # Тайм-аут до 2 секунд
             except asyncio.TimeoutError:
                 timeout += 1
                 print(f"Scheduler: Тайм-аут ожидания события для {target_username}, попытка {timeout + 1}")
@@ -163,9 +165,9 @@ async def schedule_user_check_with_entry(target_username, start_time, end_time, 
     except Exception as e:
         print(f"Ошибка в schedule_user_check_with_entry для {target_username}: {e}")
         import traceback
-        traceback.print_exc()  # Выводим полный стек ошибки
+        traceback.print_exc()  # Полный стек ошибки
 
-# Обновление команды /set_time_slot
+# командОчка
 async def set_time_slot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         username = update.message.from_user.username
@@ -204,7 +206,7 @@ async def set_time_slot(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
 
 
-# Команда /check_time для проверки времени
+# командОчка для проверки времени
 async def check_time(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     username = update.message.from_user.username
     args = context.args
@@ -261,7 +263,6 @@ async def log_messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     else:
         print(f"❌ log_messages: Ключевые слова отсутствуют в сообщении: '{message_text}'")
 
-
     # Получаем текущую дату и время по Киеву
     kyiv_tz = pytz.timezone('Europe/Kyiv')
     current_time = datetime.now(kyiv_tz)
@@ -303,7 +304,7 @@ async def log_messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         file = await context.bot.get_file(file_id)
         await file.download_to_drive(file_path)
 
-    # Сохраняем данные в БД
+    # Сохраняем данные в бд
     cursor.execute(""" 
     INSERT INTO chat_logs (chat_id, user_id, username, message_text, file_path, timestamp, message_id)
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -363,7 +364,7 @@ async def show_logs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     except Exception as e:
         await update.message.reply_text(f"Ошибка: {e}")
 
-# Функция для назначения роли
+# командОчка для назначение роли
 async def set_role(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     username = update.message.from_user.username
 
@@ -378,7 +379,7 @@ async def set_role(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await update.message.reply_text("Использование: /set_role <username> <role>. Роли: admin, head_admin.")
         return
 
-    target_username = args[0].lstrip("@")  # Убираем "@" перед username
+    target_username = args[0].lstrip("@")  # Убираем "@" перед юзером пользователя
     role = args[1].lower()
 
     # Проверяем корректность роли
@@ -431,7 +432,7 @@ admin_surveys = {
 }
 
 # Список доступных анкет
-available_surveys = ["ML016", "ML046", "ML066", "ML076", "FM09", "ML19", "ML19/3", "ML045"]  # Можно дополнить при необходимости
+available_surveys = ["ML016", "ML046", "ML066", "ML076", "FM09", "ML19", "ML19/3", "ML045"]  # Можно дополнить
 
 # Функция start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -487,7 +488,7 @@ async def select_surveys(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     query = update.callback_query
     await query.answer()
 
-    # Извлекаем username выбранного администратора
+    # Извлекаем юзер выбранного администратора
     _, admin_username = query.data.split(":")
     context.user_data["selected_admin"] = admin_username  # Сохраняем выбранного админа в контексте
 
@@ -695,7 +696,7 @@ async def help(update, context):
 def main(): 
     application = Application.builder().token(TOKEN).build()
 
-    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("start", start)) # Я не ебу, она нихуя не делает. Просто покажет, что вы админ/владелец/гл. админ (не факт, не помню)
     application.add_handler(CommandHandler("set_role", set_role))  # Команда для выдачи ролей
     application.add_handler(CommandHandler("remove_role", remove_role))  # Команда для снятия ролей
     application.add_handler(CommandHandler("manage_surveys", manage_surveys))  # Команда для назначения анкет
@@ -707,7 +708,7 @@ def main():
     application.add_handler(CommandHandler("clear_logs", clear_logs)) # Команда для очистки логов
     application.add_handler(CommandHandler("set_time_slot", set_time_slot)) # Установить время входа на смену пользователю
     application.add_handler(CommandHandler("check_time", check_time)) # Проверить все входы пользователя на смену
-    application.add_handler(CommandHandler("help", help))  # Добавляем команду help
+    application.add_handler(CommandHandler("help", help))  # Помощница 007
 
     application.add_handler(MessageHandler(filters.ALL, log_messages))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, monitor_messages))
