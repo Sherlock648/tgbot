@@ -118,13 +118,14 @@ class OnlyMonsterManager:
     def setup_driver(self):
         if self.driver is None:
             options = uc.ChromeOptions()
+            options.add_argument('--headless') #you can remove this line to see how the bot works when you punch in the “/check_stat” command
             options.add_argument('--no-sandbox')
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--window-size=1920,1080')
             options.add_argument('--disable-blink-features=AutomationControlled')
             options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36')
 
-            chromedriver_path = r"C:\Users\sasha\Downloads\chromedriver.exe"
+            chromedriver_path = r"C:\Users\user\Downloads\chromedriver.exe" #change "user" to ur name of system
             service = Service(chromedriver_path)
 
             self.driver = uc.Chrome(service=service, options=options)
@@ -287,7 +288,7 @@ class OnlyMonsterManager:
             
             
             downloaded_file = None
-            download_folder = r"C:\Users\sasha\Downloads"
+            download_folder = r"C:\Users\...\Downloads" #change it to ur download path
             
             
             while not downloaded_file:
@@ -299,10 +300,7 @@ class OnlyMonsterManager:
                 if downloaded_file:
                     file_path = os.path.join(download_folder, downloaded_file)
                     return file_path
-
-                
                 time.sleep(1)
-
             print("Файл не найден в папке загрузок.")
             return None
 
@@ -310,13 +308,10 @@ class OnlyMonsterManager:
             print(f"Ошибка при клике по кнопкам Export или скачивании файла: {e}")
             return None
 
-
-    
     def format_date(self, date_str):
         date_obj = datetime.strptime(date_str, "%d.%m.%Y")
         return date_obj.strftime("%m-%d-%Y %I:%M %p")  
 
-    
     async def check_stat(self, update: Update, email: str, password: str, start_date: str, end_date: str) -> str:
             self.setup_driver()
             self.driver.get("https://onlymonster.ai/auth/signin")
@@ -326,7 +321,6 @@ class OnlyMonsterManager:
             print("Авторизация...")
             email_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "[name='identifier']")))
             password_field = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "[name='password']")))
-
             email_field.send_keys(email)
             password_field.send_keys(password)
 
@@ -344,30 +338,18 @@ class OnlyMonsterManager:
             
             checkbox = wait.until(EC.presence_of_element_located((By.ID, "likeOnlyfans")))
             checkbox.click()
-
-            
             time.sleep(5)
-
             
             start_date_formatted = self.format_date(start_date)
             end_date_formatted = self.format_date(end_date)
-
-            
             date_input = self.driver.find_element(By.NAME, "date")
-
-            
+        
             date_input.click()
-
-            
             date_input.click()  
             time.sleep(1)  
             date_input.clear()  
-
-
-            
             time.sleep(2)
 
-            
             print(f"Start Date: {start_date_formatted}, End Date: {end_date_formatted}")
             date_input.send_keys(f"{start_date_formatted} ~ {end_date_formatted}")
 
@@ -375,11 +357,8 @@ class OnlyMonsterManager:
             select_time_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Select time')]")
             
             select_time_button.click()
-
-            
             time.sleep(3)
 
-            
             try:
                 
                 WebDriverWait(self.driver, 5).until(
@@ -432,18 +411,15 @@ class OnlyMonsterManager:
                 return None
 
             
-            download_folder = r"C:\Users\sasha\Downloads"
+            download_folder = r"C:\Users\...\Downloads" #change it to your download path
 
-            
             if not os.path.exists(download_folder):
                 print(f"❌ Папка {download_folder} не существует.")
                 return None
 
-            
             print("Ожидаем завершение скачивания файла...")
             await asyncio.sleep(5)  
 
-            
             downloaded_file = None
             for _ in range(10):  
                 files = [f for f in os.listdir(download_folder) if f.endswith(".xlsx")]
@@ -467,10 +443,8 @@ def find_latest_file(directory: str, extension: str = "*.xlsx") -> str:
     if not files:
         return None  
 
-    
     latest_file = max(files, key=os.path.getmtime)
     return latest_file
-
 
 manager = OnlyMonsterManager()  
 
@@ -540,13 +514,10 @@ async def login_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         email = context.args[0]
         password = context.args[1]
 
-        
         manager = OnlyMonsterManager()
-        
         
         status_message = await update.message.reply_text("🔄 Выполняется вход в OnlyMonster...")
 
-        
         success = await manager.login_to_onlymonster(update, email, password)
 
         if success:
@@ -573,12 +544,12 @@ def escape_markdown(text: str) -> str:
     escape_chars = r"_*[]()~`>#+-=|{}.!"
     return ''.join(f"\\{char}" if char in escape_chars else char for char in text)
 
-TARGET_THREAD_IDS = [4]  
-TARGET_CHAT_IDS = [-1002298054169]  
+TARGET_THREAD_IDS = [4]  #example for your id of thread (chech it with "/get_chat_id")
+TARGET_CHAT_IDS = [-1002298054169]  #example for your id of chat (chech it with "/get_chat_id")
 TARGET_KEYWORDS = [
     "вышла", "вышел", "зашел", "зашёл", "зашла", "вход", "выход"
     "Зашла", "Вышла", "Зашел", "Вышел", "Зашёл", "Вход", "Выход"
-]
+] #words for entering and leaving the shift. the bot checks these words and then logs it (/show_logs)
 
 
 entry_events_lock = asyncio.Lock()  
@@ -728,19 +699,15 @@ async def log_messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         if thread_id not in TARGET_THREAD_IDS:
             print("❌ Сообщение из нецелевой темы")
             return
-
-        
+            
         if message.photo:
             photo = message.photo[-1]  
             file = await context.bot.get_file(photo.file_id)
             
-            
             os.makedirs('photos', exist_ok=True)
-            
             
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             file_path = f'photos/{username}_{timestamp}.jpg'
-            
             
             await file.download_to_drive(file_path)
             print(f"✅ Фото сохранено: {file_path}")
@@ -806,7 +773,7 @@ async def schedule_user_check_with_entry(target_username, start_time, end_time, 
         print(f"- End time: {end_time}")
         print(f"- Sender Chat ID: {sender_chat_id}")
 
-        kyiv_tz = pytz.timezone('Europe/Kyiv') #замените на собственный чп
+        kyiv_tz = pytz.timezone('Europe/Kyiv') #change to the desired time zone
         now = datetime.now(kyiv_tz)
 
         current_date = now.date()
@@ -1177,14 +1144,14 @@ def load_saved_time_slots():
         cursor.execute("SELECT username, start_time, end_time, sender_chat_id FROM employee_time_slots")
         saved_slots = cursor.fetchall()
         
-        kyiv_tz = pytz.timezone('Europe/Kyiv')
-        now = datetime.now(kyiv_tz)
+        kyiv_tz = pytz.timezone('Europe/Kyiv') #change to the desired time zone
+        now = datetime.now(kyiv_tz) #change to the desired time zone
         
         messages = []  
 
         for username, start_time_str, end_time_str, sender_chat_id in saved_slots:
-            start_time = kyiv_tz.localize(datetime.combine(now.date(), datetime.strptime(start_time_str, "%H:%M").time()))
-            end_time = kyiv_tz.localize(datetime.combine(now.date(), datetime.strptime(end_time_str, "%H:%M").time()))
+            start_time = kyiv_tz.localize(datetime.combine(now.date(), datetime.strptime(start_time_str, "%H:%M").time())) #change "kyiv_tz" to your time zone
+            end_time = kyiv_tz.localize(datetime.combine(now.date(), datetime.strptime(end_time_str, "%H:%M").time())) #change "kyiv_tz" to your time zone
             
             if end_time <= start_time:
                 end_time += timedelta(days=1)
@@ -1381,11 +1348,9 @@ async def remove_role(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 
 admin_surveys = {
-    
 }
 
-
-available_surveys = ["ML016", "ML046", "ML066", "ML076", "FM09", "ML19", "ML19/3", "ML045"]  
+available_surveys = ["ML016", "ML046", "ML066", "ML076", "FM09", "ML19", "ML19/3", "ML045"] #the name of the model profiles or the name of your group 
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -1525,9 +1490,6 @@ async def add_to_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         f"Вы запросили добавление бота в группу: '{group_name}'. "
         "Теперь добавьте бота в эту группу, а затем используйте команду /verify_chat."
     )
-
-
-
 
 async def verify_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     username = update.message.from_user.username
