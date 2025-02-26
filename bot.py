@@ -1728,11 +1728,11 @@ def main():
     application.add_handler(CommandHandler("check_stat", check_stat_command))
     application.add_handler(CommandHandler("restart_bot", restart_bot))
     application.add_handler(CommandHandler("clear_balance", clear_balance))
-    print("Команды зарегистрированы")
+    print("Teams are registered")
 
     application.add_handler(CallbackQueryHandler(select_surveys, pattern="^select_admin:"))
     application.add_handler(CallbackQueryHandler(assign_surveys, pattern="^assign_survey:|^assign_done$"))
-    print("Callback обработчики зарегистрированы")
+    print("Callback handlers are registered")
 
     application.add_handler(MessageHandler(
         filters.ChatType.SUPERGROUP & 
@@ -1740,16 +1740,16 @@ def main():
         ~filters.COMMAND,
         monitor_messages
     ), group=1)
-    print("Monitor messages handler зарегистрирован")
+    print("Monitor messages handler registered")
 
     application.add_handler(MessageHandler(
         filters.ChatType.SUPERGROUP & 
         ~filters.COMMAND,
         log_messages
     ), group=2)
-    print("Log messages handler зарегистрирован")
+    print("Log messages handler registered")
 
-    print("Бот запущен и готов к работе!")
+    print("The bot is up and running and ready to go!")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
