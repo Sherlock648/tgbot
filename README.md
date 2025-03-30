@@ -71,10 +71,6 @@ Russian:
 Примечания:
 Для хранения конфиденциальной информации, такой как логины и пароли, используется база данных SQLite.
 Бот автоматически уведомляет администратора о проблемах с сотрудниками (например, если они не вошли на смену).
-
-
-Этот README будет полезен пользователю для быстрого старта с твоим ботом и понятия, что он может ожидать от этого проекта.
-
 __________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
 English:
 # Telegram Bot for Administrators
@@ -146,6 +142,3 @@ All activities in the Telegram supergroup related to the bot are logged in the d
 Notes:
 A SQLite database is used to store sensitive information such as logins and passwords.
 The bot automatically notifies the administrator if there are problems with employees (for example, if they are not logged in for a shift).
-
-
-This README will be useful for the user to get a quick start with your bot and an idea of what they can expect from this project.
