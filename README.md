@@ -1,4 +1,4 @@
-First (1) - Russian
+First (1) - Russian;
 Second (2) - English
 
 Russian:
