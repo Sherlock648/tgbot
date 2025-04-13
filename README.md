@@ -26,7 +26,7 @@ Russian:
    cd yourrepo
    
 2. Установите необходимые зависимости: Если у вас нет необходимых библиотек, установите их с помощью pip:
-   pip install -r ***
+   pip install ***
 3. Создайте нового бота в Telegram через BotFather и получите токен.
 4. В config.py впишите свой TOKEN бота.
    TOKEN = 'ЗАМЕНИТЕ_НА_ВАШ_ТОКЕН'
@@ -97,7 +97,7 @@ This bot is designed for company administrators to automate tasks such as employ
    cd yourrepo
    
 2. Install the required dependencies: If you don't have the required libraries, install them using pip:
-   pip install -r ***
+   pip install ***
 3. Create a new bot in Telegram via BotFather and get the token.
 4. In config.py, write your bot's TOKEN.
    TOKEN = 'REPLACE_WITH_YOUR_TOKEN'
