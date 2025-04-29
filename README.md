@@ -22,7 +22,7 @@ Russian:
 #Настройка проекта:
 1. Склонируйте репозиторий:
    ```bash
-   git clone https://github.com/yourusername/yourrepo.git
+   git clone https://github.com/Sherlock648/tgbot.git
    cd yourrepo
    
 2. Установите необходимые зависимости: Если у вас нет необходимых библиотек, установите их с помощью pip:
@@ -93,7 +93,7 @@ This bot is designed for company administrators to automate tasks such as employ
 #Project Setup:
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/yourrepo.git
+   git clone https://github.com/Sherlock648/tgbot.git
    cd yourrepo
    
 2. Install the required dependencies: If you don't have the required libraries, install them using pip:
